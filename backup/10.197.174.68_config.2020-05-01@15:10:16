@@ -1,0 +1,326 @@
+!Command: show running-config
+!Running configuration last done at: Fri May  1 04:50:30 2020
+!Time: Fri May  1 09:40:25 2020
+
+version 9.3(3) Bios:version 07.65 
+hostname N9K-1
+vdc N9K-1 id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 256
+  limit-resource u4route-mem minimum 248 maximum 248
+  limit-resource u6route-mem minimum 96 maximum 96
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+
+feature nxapi
+feature scp-server
+cfs eth distribute
+nv overlay evpn
+feature ospf
+feature bgp
+feature netconf
+feature interface-vlan
+feature vn-segment-vlan-based
+feature lacp
+feature vpc
+feature lldp
+feature bfd
+feature nv overlay
+
+no password strength-check
+username admin password 5 $5$JmsWGq2b$ZnrDeEnOOgVrld4eAfKTqH5QuOcLR7n.h6nG4M1qXp3  role network-admin
+no ip domain-lookup
+ipv6 access-list management-v6
+  10 remark hq
+  11 permit ipv6 2001:db8:1200:8800::/59 any 
+  20 remark branch
+  21 permit ipv6 2001:db8:2200:8800::/59 any 
+copp profile strict
+snmp-server user admin network-admin auth md5 0xabcd170ecebdb996cdcdde4890cfaf3c priv 0xabcd170ecebdb996cdcdde4890cfaf3c localizedkey
+rmon event 1 description FATAL(1) owner PMON@FATAL
+rmon event 2 description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 description ERROR(3) owner PMON@ERROR
+rmon event 4 description WARNING(4) owner PMON@WARNING
+rmon event 5 description INFORMATION(5) owner PMON@INFO
+
+ip route 0.0.0.0/0 10.197.174.65 vrf management
+ip route 0.0.0.0/0 10.251.114.129
+vlan 1,101-104,200
+vlan 101
+  vn-segment 100101
+vlan 102
+  vn-segment 100102
+vlan 103
+  vn-segment 100103
+vlan 104
+  vn-segment 100104
+vlan 200
+  name L3-Pt-to-Pt-vPC-Peers
+
+spanning-tree port type edge default
+spanning-tree port type edge bpduguard default
+route-map permit-all-next-hop-unchanged permit 10
+  set ip next-hop unchanged
+vrf context management
+  ip route 0.0.0.0/0 10.197.174.65
+  ip route 0.0.0.0/0 10.251.114.129
+  ip route 10.104.210.230/32 10.197.174.65
+hardware access-list tcam region qos 0
+hardware access-list tcam region arp-ether 256 double-wide
+vpc domain 101
+  peer-switch
+  role priority 100
+  peer-keepalive destination 10.197.174.70 source 10.197.174.68
+  delay restore 120
+  peer-gateway
+  layer3 peer-router
+  auto-recovery
+  ip arp synchronize
+
+
+interface Vlan1
+  no ip redirects
+  no ipv6 redirects
+
+interface Vlan200
+  no shutdown
+  mtu 9216
+  no ip redirects
+  ip address 10.12.0.1/24
+  no ipv6 redirects
+  ip ospf network point-to-point
+  ip router ospf DCI area 0.0.0.0
+
+interface port-channel1
+  description Host-1
+  switchport mode trunk
+  spanning-tree bpdufilter enable
+  vpc 1
+
+interface port-channel100
+  description N9K-2
+  switchport mode trunk
+  spanning-tree port type network
+  vpc peer-link
+
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  advertise virtual-rmac
+  source-interface loopback2
+  member vni 100101
+    ingress-replication protocol bgp
+  member vni 100102
+    ingress-replication protocol bgp
+  member vni 100103
+    ingress-replication protocol bgp
+  member vni 100104
+    ingress-replication protocol bgp
+
+interface Ethernet1/1
+  description N9K-3
+  no switchport
+  no ip redirects
+  ip address 10.13.0.1/24
+  no shutdown
+
+interface Ethernet1/2
+
+interface Ethernet1/3
+  description N9K-2
+  switchport mode trunk
+  channel-group 100 mode active
+
+interface Ethernet1/4
+  description N9K-4
+  no switchport
+  no ip redirects
+  ip address 10.14.0.1/24
+  no ipv6 redirects
+  ip router ospf DCI area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/5
+  description Host-1
+  switchport mode trunk
+  channel-group 1 mode active
+
+interface Ethernet1/6
+
+interface Ethernet1/7
+
+interface Ethernet1/8
+
+interface Ethernet1/9
+
+interface Ethernet1/10
+
+interface Ethernet1/11
+
+interface Ethernet1/12
+
+interface Ethernet1/13
+
+interface Ethernet1/14
+
+interface Ethernet1/15
+
+interface Ethernet1/16
+
+interface Ethernet1/17
+
+interface Ethernet1/18
+
+interface Ethernet1/19
+
+interface Ethernet1/20
+
+interface Ethernet1/21
+
+interface Ethernet1/22
+
+interface Ethernet1/23
+
+interface Ethernet1/24
+
+interface Ethernet1/25
+
+interface Ethernet1/26
+
+interface Ethernet1/27
+
+interface Ethernet1/28
+
+interface Ethernet1/29
+
+interface Ethernet1/30
+
+interface Ethernet1/31
+
+interface Ethernet1/32
+
+interface Ethernet1/33
+
+interface Ethernet1/34
+
+interface Ethernet1/35
+
+interface Ethernet1/36
+
+interface Ethernet1/37
+
+interface Ethernet1/38
+
+interface Ethernet1/39
+
+interface Ethernet1/40
+
+interface Ethernet1/41
+
+interface Ethernet1/42
+
+interface Ethernet1/43
+
+interface Ethernet1/44
+
+interface Ethernet1/45
+
+interface Ethernet1/46
+
+interface Ethernet1/47
+
+interface Ethernet1/48
+
+interface Ethernet1/49
+
+interface Ethernet1/50
+
+interface Ethernet1/51
+
+interface Ethernet1/52
+
+interface Ethernet1/53
+
+interface Ethernet1/54
+
+interface mgmt0
+  vrf member management
+  ip address 10.197.174.68/28
+
+interface loopback1
+  description RTR-ID
+  ip address 1.1.1.1/32
+  ip router ospf DCI area 0.0.0.0
+
+interface loopback2
+  description VTEP
+  ip address 11.11.11.11/32
+  ip address 12.12.12.12/32 secondary
+cli alias name wr copy run start
+line console
+line vty
+boot nxos bootflash:/nxos.9.3.3.bin 
+router ospf DCI
+  router-id 1.1.1.1
+  log-adjacency-changes
+router bgp 65001
+  router-id 1.1.1.1
+  log-neighbor-changes
+  event-history detail
+  address-family ipv4 unicast
+    network 11.11.11.11/32
+    network 12.12.12.12/32
+  address-family l2vpn evpn
+    nexthop route-map permit-all-next-hop-unchanged
+    retain route-target all
+  template peer DCI-ebgp
+    bfd
+    remote-as 65002
+    password 3 984009342db902cb6c23dfe489559f57
+    timers 5 15
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+      route-map permit-all-next-hop-unchanged out
+      rewrite-evpn-rt-asn
+  template peer DCI-ibgp
+    bfd
+    remote-as 65001
+    password 3 984009342db902cb6c23dfe489559f57
+    update-source loopback1
+    timers 5 15
+    address-family ipv4 unicast
+      send-community
+      send-community extended
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+  neighbor 2.2.2.2
+    inherit peer DCI-ibgp
+  neighbor 10.13.0.2
+    inherit peer DCI-ebgp
+  neighbor 10.14.0.2
+    inherit peer DCI-ebgp
+evpn
+  vni 100101 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 100102 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 100103 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 100104 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+
+no logging console

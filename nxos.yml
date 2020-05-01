@@ -1,0 +1,10 @@
+---
+  - hosts: nxos
+    gather_facts: no
+
+    tasks:
+
+      - name: Backup nxos device
+        nxos_config:
+          backup: yes
+        register: backup_nxos_location
